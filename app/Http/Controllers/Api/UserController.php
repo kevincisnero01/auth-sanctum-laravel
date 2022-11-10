@@ -67,4 +67,14 @@ class UserController extends Controller
         }
 
     }
+
+    public function userProfile()
+    {
+        return response()->json([
+            'status' => 1,
+            'message' => 'Informacion de Perfil',
+            'data' => auth()->user()
+        ]);
+    }
+
 }
