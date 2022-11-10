@@ -31,4 +31,40 @@ class UserController extends Controller
         ]);
         
     }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $user = User::where('email','=', $request->email)->first();
+
+        if(isset($user->id)){
+
+            if(Hash::check($request->password, $user->password))
+            {   
+                $token = $user->createToken("auth_token")->plainTextToken;
+
+                return response()->json([
+                    'status' => 1,
+                    'message' => 'Usuario Logeado',
+                    'access_token' => $token
+                ]);
+            }else{
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Credenciales incorrectas'
+                ],404);
+            }
+
+        }else{
+            return response()->json([
+                'status' => 0,
+                'message' => 'Usuario no registrado'
+            ],404);
+        }
+
+    }
 }
